@@ -3,9 +3,9 @@ module Test.Main where
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE)
-import Data.Typelevel.Num (toInt, d6, d3, d9, d2)
-import Data.Typelevel.Vec (slice, tail, drop, take, lengthT, concat, replicate, (+>), empty)
-import Prelude (($), Unit, bind)
+import Data.Typelevel.Num (toInt, d6, d3, d9, d2, D9)
+import Data.Vec (Vec, slice, tail, drop, take, lengthT, concat, replicate, (+>), empty)
+import Prelude (($), Unit, bind, pure)
 import Test.Unit (suite, test)
 import Test.Unit.Assert (equal)
 import Test.Unit.Console (TESTOUTPUT)
@@ -17,6 +17,7 @@ main = runTest do
     let vec1 = replicate d2 1
         vec2 = replicate d3 2
         vec3 = replicate d9 3
+        vec3' = pure 3 :: Vec D9 Int
     test "cons length" do
       equal 3 $ toInt $ lengthT $ 1 +> 2 +> 3 +> empty
     test "replicate length" do
@@ -31,3 +32,5 @@ main = runTest do
       equal 1 $ toInt $ lengthT (tail vec1)
     test "slice length" do
       equal 3 $ toInt $ lengthT (slice d3 d6 vec3)
+    test "pure replicates" do
+      equal vec3 vec3'
