@@ -200,8 +200,8 @@ instance functorVec :: (Nat s) => Functor (Vec s) where
 instance applyVec :: (Nat s) => Apply (Vec s) where
   apply (Vec a) (Vec b) = Vec $ apply a b
 
-instance applicativeVec :: Applicative (Vec D1) where
-  pure a = singleton a
+instance applicativeVec :: (Nat s) => Applicative (Vec s) where
+  pure a = replicate (undefined :: s) a
 
 instance foldableVec :: (Nat s) => Foldable (Vec s) where
   foldMap f (Vec xs) = foldMap f xs
