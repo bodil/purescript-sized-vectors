@@ -37,6 +37,7 @@ import Prelude
 import Data.Array as Array
 import Data.Foldable (foldl, foldr, foldMap, class Foldable)
 import Data.Maybe (fromJust)
+import Data.Traversable (traverse, sequence, class Traversable)
 import Data.Tuple (Tuple(Tuple))
 import Data.Typelevel.Num (class Min, class Sub, class LtEq, class Pred, class Lt)
 import Data.Typelevel.Num.Ops (class Add, class Succ)
@@ -207,6 +208,10 @@ instance foldableVec :: (Nat s) => Foldable (Vec s) where
   foldMap f (Vec xs) = foldMap f xs
   foldr f i (Vec xs) = foldr f i xs
   foldl f i (Vec xs) = foldl f i xs
+
+instance traversableVec :: (Nat s) => Traversable (Vec s) where
+  traverse f (Vec xs) = Vec <$> traverse f xs
+  sequence (Vec xs) = Vec <$> sequence xs
 
 instance eqVec :: (Nat s, Eq a) => Eq (Vec s a) where
   eq (Vec v1) (Vec v2) = v1 == v2
