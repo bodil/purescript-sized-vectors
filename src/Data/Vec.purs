@@ -6,6 +6,7 @@ module Data.Vec
   , uncons
   , singleton
   , replicate
+  , replicate'
   , length
   , lengthT
   , toArray
@@ -23,8 +24,11 @@ module Data.Vec
   , insert
   , insertBy
   , slice
+  , slice'
   , take
+  , take'
   , drop
+  , drop'
   , zip
   , zipWith
   , unzip
@@ -74,7 +78,10 @@ singleton x = x +> empty
 
 -- | Construct a vector of a given length containing the same element repeated.
 replicate :: forall s a. Nat s => s -> a -> Vec s a
-replicate s a = Vec $ Array.replicate (toInt s) a
+replicate = const replicate'
+
+replicate' :: forall s a. Nat s => a -> Vec s a
+replicate' a = Vec $ Array.replicate (toInt (undefined :: s)) a
 
 -- | Get the length of a vector as an integer.
 length :: forall s a. Nat s => Vec s a -> Int
@@ -156,13 +163,24 @@ insertBy f a (Vec v) = Vec $ Array.insertBy f a v
 slice :: forall i1 i2 s1 s2 a. Nat i1 => Nat i2 => LtEq i1 s1 => LtEq i2 s1 => LtEq i1 i2 => Sub i2 i1 s2 => i1 -> i2 -> Vec s1 a -> Vec s2 a
 slice i1 i2 (Vec xs) = Vec $ Array.slice (toInt i1) (toInt i2) xs
 
+slice' :: forall i1 i2 s1 s2 a. Nat i1 => Nat i2 => LtEq i1 s1 => LtEq i2 s1 => LtEq i1 i2 => Sub i2 i1 s2 => i1 -> Vec s1 a -> Vec s2 a
+slice' i1 (Vec xs) = Vec $ Array.slice (toInt i1) (toInt (undefined :: i2)) xs
+
 -- | Get the first `c` elements from a vector.
 take :: forall c s a. Nat c => LtEq c s => c -> Vec s a -> Vec c a
-take c (Vec xs) = Vec $ Array.take (toInt c) xs
+take = const take'
+
+take' :: forall c s a. Nat c => LtEq c s => Vec s a -> Vec c a
+take' (Vec xs) = Vec $ Array.take (toInt (undefined :: c)) xs
 
 -- | Drop the first `c` elements from a vector.
 drop :: forall c s1 s2 a. Nat c => LtEq c s1 => Sub s1 c s2 => c -> Vec s1 a -> Vec s2 a
 drop c (Vec xs) = Vec $ Array.drop (toInt c) xs
+-- the typchecker doesn't like this:
+--drop = const drop'
+
+drop' :: forall c s1 s2 a. Nat c => LtEq c s1 => Sub s1 c s2 => Vec s1 a -> Vec s2 a
+drop' (Vec xs) = Vec $ Array.drop (toInt (undefined :: c)) xs
 
 -- | Zip two vectors together into a vector of tuples.
 -- |
@@ -202,7 +220,7 @@ instance applyVec :: Nat s => Apply (Vec s) where
   apply (Vec a) (Vec b) = Vec $ apply a b
 
 instance applicativeVec :: Nat s => Applicative (Vec s) where
-  pure a = replicate (undefined :: s) a
+  pure a = replicate' a
 
 instance foldableVec :: Nat s => Foldable (Vec s) where
   foldMap f (Vec xs) = foldMap f xs
