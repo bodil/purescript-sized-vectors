@@ -7,6 +7,7 @@ module Data.Vec
   , singleton
   , replicate
   , replicate'
+  , fromArray
   , length
   , lengthT
   , toArray
@@ -40,7 +41,7 @@ module Data.Vec
 import Prelude
 import Data.Array as Array
 import Data.Foldable (foldl, foldr, foldMap, class Foldable)
-import Data.Maybe (fromJust)
+import Data.Maybe (Maybe(..), fromJust)
 import Data.Traversable (traverse, sequence, class Traversable)
 import Data.Tuple (Tuple(Tuple))
 import Data.Typelevel.Num (class Min, class Sub, class LtEq, class Pred, class Lt)
@@ -82,6 +83,12 @@ replicate = const replicate'
 
 replicate' :: forall s a. Nat s => a -> Vec s a
 replicate' a = Vec $ Array.replicate (toInt (undefined :: s)) a
+
+-- | Convert an array to a vector.
+fromArray :: forall s a. Nat s => Array a -> Maybe (Vec s a)
+fromArray xs = if Array.length xs == toInt (undefined :: s)
+               then Just $ Vec xs
+               else Nothing
 
 -- | Get the length of a vector as an integer.
 length :: forall s a. Nat s => Vec s a -> Int
