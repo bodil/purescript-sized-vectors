@@ -17,7 +17,7 @@ module Data.Vec
   , lengthT
   , toArray
   , toUnfoldable
-  , unsafeIndex
+  , index'
   , index, (!!)
   , concat
   , updateAt
@@ -43,7 +43,7 @@ module Data.Vec
   , sort
   , sortBy
   , reverse
-  , scalarMul
+  , dotProduct
   ) where
 
 import Prelude
@@ -137,8 +137,8 @@ toArray (Vec xs) = xs
 toUnfoldable :: forall f s a. Unfoldable f => Nat s => Vec s a -> f a
 toUnfoldable (Vec v) = Array.toUnfoldable v
 
-unsafeIndex ∷ ∀s a. Vec s a -> Int -> a
-unsafeIndex (Vec xs) i = unsafePartial $ Array.unsafeIndex xs i
+index' ∷ ∀s a. Vec s a -> Int -> Maybe a
+index' (Vec xs) i = Array.index xs i
 
 -- | Get the element at a given index inside a vector. Index out of bounds errors
 -- | are caught at compile time.
@@ -282,5 +282,5 @@ instance eqVec :: (Nat s, Eq a) => Eq (Vec s a) where
 instance showVec :: (Nat s, Show a) => Show (Vec s a) where
   show (Vec v) = show v
 
-scalarMul :: ∀s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
-scalarMul a b = sum $ zipWithE (*) a b
+dotProduct :: ∀s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
+dotProduct a b = sum $ zipWithE (*) a b

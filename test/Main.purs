@@ -4,9 +4,10 @@ import Effect (Effect)
 import Data.Maybe (fromJust)
 import Data.Traversable (sequence)
 import Data.Typelevel.Num (D1, D2, D3, D4, D9, d2, d3, d6, toInt)
-import Data.Vec (Vec, concat, drop, drop', empty, length, lengthT, replicate, replicate', fromArray, slice, slice', tail, take, take', (+>))
+import Data.Vec (Vec, concat, dotProduct, drop, drop', empty, fill, fromArray, length, lengthT, range, range', replicate, replicate', slice, slice', tail, take, take', (+>))
+import Data.Vec as Vec
 import Partial.Unsafe (unsafePartial)
-import Prelude (($), Unit, pure, discard)
+import Prelude (Unit, discard, pure, ($), (+))
 import Test.Unit (suite, test)
 import Test.Unit.Assert (equal)
 import Test.Unit.Main (runTest)
@@ -18,6 +19,13 @@ main = runTest do
         vec2 = replicate d3 2
         (vec3 :: Vec D9 Int) = replicate' 3
         (vec4 :: Vec D4 Int) = unsafePartial $ fromJust $ fromArray [1, 2, 3, 4]
+    test "fill" do
+      equal (Vec.vec3 1 2 3) $ fill (_ + 1)
+    test "range'" do
+      equal (Vec.vec3 4 5 6) $ range' 4
+      equal (Vec.vec2 4 5) $ range' 4
+    test "range" do
+      equal (Vec.vec3 4 5 6) $ range 4 d3
     test "cons length" do
       equal 3 $ toInt $ lengthT $ 1 +> 2 +> 3 +> empty
       equal 3 $ length $ 1 +> 2 +> 3 +> empty
@@ -55,3 +63,6 @@ main = runTest do
                      , 2 +> 3 +> empty
                      ]
       equal expected $ sequence vecOfArrays
+    test "dotProduct" do
+      equal 0 $ dotProduct (Vec.vec3 1 0 0) (Vec.vec3 0 1 0)
+      equal 32 $ dotProduct (Vec.vec3 1 2 3) (Vec.vec3 4 5 6)
