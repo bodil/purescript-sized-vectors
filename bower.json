@@ -1,6 +1,6 @@
 {
   "name": "purescript-sized-vectors",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "license": "LGPL-3.0+",
   "repository": {
     "type": "git",
@@ -13,15 +13,15 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "^3.0.0",
-    "purescript-typelevel": "^3.0.0",
-    "purescript-foldable-traversable": "^3.0.0",
-    "purescript-maybe": "^3.0.0",
-    "purescript-arrays": "^4.0.1",
-    "purescript-unfoldable": "^3.0.0"
+    "purescript-prelude": "^4.0.1",
+    "purescript-foldable-traversable": "^4.0.0",
+    "purescript-maybe": "^4.0.0",
+    "purescript-arrays": "^5.0.0",
+    "purescript-unfoldable": "^4.0.0",
+    "purescript-typelevel": "^3.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0",
-    "purescript-test-unit": "^11.0.0"
+    "purescript-psci-support": "^4.0.0",
+    "purescript-test-unit": "^14.0.0"
   }
 }
