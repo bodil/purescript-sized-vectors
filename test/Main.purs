@@ -1,5 +1,6 @@
 module Test.Main where
 
+import Data.Distributive (distribute)
 import Effect (Effect)
 import Data.Maybe (fromJust)
 import Data.Traversable (sequence)
@@ -63,6 +64,20 @@ main = runTest do
                      , 2 +> 3 +> empty
                      ]
       equal expected $ sequence vecOfArrays
+    test "distributive" do
+      let vecs1 = (1 +> 2 +> empty)
+               +> (3 +> 4 +> empty)
+               +> (5 +> 6 +> empty)
+               +> empty
+
+          vecs2 =  (1 +> 3 +> 5 +> empty)
+                +> (2 +> 4 +> 6 +> empty)
+                +> empty
+
+      equal vecs2 $ distribute vecs1
+      equal vecs1 $ distribute vecs2
+      equal vecs1 $ distribute $ distribute vecs1
+      equal vecs2 $ distribute $ distribute vecs2
     test "dotProduct" do
       equal 0 $ dotProduct (Vec.vec3 1 0 0) (Vec.vec3 0 1 0)
       equal 32 $ dotProduct (Vec.vec3 1 2 3) (Vec.vec3 4 5 6)
