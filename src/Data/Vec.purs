@@ -17,7 +17,6 @@ module Data.Vec
   , lengthT
   , toArray
   , toUnfoldable
-  , index'
   , index, (!!)
   , index'
   , concat
@@ -138,9 +137,6 @@ toArray (Vec xs) = xs
 -- | Convert a vector into any `Unfoldable`.
 toUnfoldable :: forall f s a. Unfoldable f => Nat s => Vec s a -> f a
 toUnfoldable (Vec v) = Array.toUnfoldable v
-
-index' ∷ ∀s a. Vec s a -> Int -> Maybe a
-index' (Vec xs) i = Array.index xs i
 
 -- | Get the element at a given index inside a vector. Index out of bounds errors
 -- | are caught at compile time.
