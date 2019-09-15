@@ -96,10 +96,10 @@ vec3 x y z = x +> y +> z +> empty
 
 -- | fill vec using a function which is given indices
 fill :: forall a s. Nat s => (Int -> a) -> Vec s a
-fill f = Vec $ map f range
+fill f = Vec $ map f range_
   where
     s = toInt (undefined :: s)
-    range = case s of
+    range_ = case s of
       0 -> []
       otherwise -> (0 `Array.range`  (s - 1))
 
