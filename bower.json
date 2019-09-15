@@ -13,16 +13,16 @@
     "output"
   ],
   "dependencies": {
-    "purescript-prelude": "^4.0.1",
+    "purescript-prelude": "^4.1.0",
     "purescript-foldable-traversable": "^4.0.0",
     "purescript-maybe": "^4.0.0",
-    "purescript-arrays": "^5.0.0",
+    "purescript-arrays": "^5.3.0",
     "purescript-unfoldable": "^4.0.0",
-    "purescript-typelevel": "^4.0.0",
+    "purescript-typelevel": "^6.0.0",
     "purescript-distributive": "^4.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^4.0.0",
-    "purescript-test-unit": "^14.0.0"
+    "purescript-test-unit": "^15.0.0"
   }
 }
