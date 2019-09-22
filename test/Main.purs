@@ -40,15 +40,15 @@ main = runTest do
       equal 5 $ toInt $ lengthT (concat vec1 vec2)
     test "take length" do
       equal 2 $ length $ take d2 vec2
-      equal 2 $ toInt $ lengthT (take' vec2) :: D2
+      equal 2 $ toInt $ (lengthT (take' vec2) :: D2)
     test "drop length" do
       equal 1 $ length $ drop d2 vec2
-      equal 1 $ toInt $ lengthT (drop' vec2) :: D1
+      equal 1 $ toInt $ (lengthT (drop' vec2) :: D1)
     test "tail length" do
       equal 1 $ toInt $ lengthT (tail vec1)
     test "slice length" do
       equal 3 $ length $ slice d3 d6 vec3
-      equal 3 $ toInt $ lengthT (slice' d3 vec3) :: D3
+      equal 3 $ toInt $ (lengthT (slice' d3 vec3) :: D3)
     test "pure replicates" do
       let vec3' = pure 3 :: Vec D9 Int
       equal vec3 vec3'
