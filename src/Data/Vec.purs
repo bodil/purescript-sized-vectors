@@ -292,5 +292,14 @@ instance eqVec :: (Nat s, Eq a) => Eq (Vec s a) where
 instance showVec :: (Nat s, Show a) => Show (Vec s a) where
   show (Vec v) = show v
 
+instance semiringVec :: (Semiring a, Nat s) => Semiring (Vec s a) where
+  add v1 v2 = zipWithE add v1 v2
+  zero = pure zero
+  mul v1 v2 = zipWithE mul v1 v2
+  one = pure one
+
+instance ringVec :: (Ring a, Nat s) => Ring (Vec s a) where
+  sub v1 v2 = zipWithE sub v1 v2
+
 dotProduct :: ∀s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b

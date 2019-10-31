@@ -1,5 +1,6 @@
 module Test.Main where
 
+import Prelude
 import Data.Distributive (distribute)
 import Effect (Effect)
 import Data.Maybe (fromJust)
@@ -78,6 +79,23 @@ main = runTest do
       equal vecs1 $ distribute vecs2
       equal vecs1 $ distribute $ distribute vecs1
       equal vecs2 $ distribute $ distribute vecs2
+    test "semiring" do
+      let v1 = Vec.vec3 1 2 3
+          v2 = Vec.vec3 4 5 6
+          v3 = Vec.vec3 7 8 9
+      equal ((v1 + v2) + v3) (v1 + (v2 + v3))
+      equal (zero + v1) (v1 + zero)
+      equal (v1 + v2) (v2 + v1)
+      equal ((v1 * v2) * v3) (v1 * (v2 * v3))
+      equal (one * v1) (v1 * one)
+      equal (v1 * (v2 + v3)) ((v1 * v2) + (v1 * v3))
+      equal ((v1 + v2) * v3) ((v1 * v3) + (v2 * v3))
+      equal (zero * v1) zero
+      equal (v1 * zero) zero
+    test "ring" do
+      let v1 = Vec.vec3 1 2 3
+      equal (v1 - v1) zero
+      equal ((zero - v1) + v1) zero
     test "dotProduct" do
       equal 0 $ dotProduct (Vec.vec3 1 0 0) (Vec.vec3 0 1 0)
       equal 32 $ dotProduct (Vec.vec3 1 2 3) (Vec.vec3 4 5 6)
