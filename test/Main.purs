@@ -9,7 +9,6 @@ import Data.Typelevel.Num (D1, D2, D3, D4, D9, d2, d3, d6, toInt)
 import Data.Vec (Vec, concat, dotProduct, drop, drop', empty, fill, fromArray, length, lengthT, range, range', replicate, replicate', slice, slice', tail, take, take', (+>))
 import Data.Vec as Vec
 import Partial.Unsafe (unsafePartial)
-import Prelude (Unit, discard, pure, ($), (+))
 import Test.Unit (suite, test)
 import Test.Unit.Assert (equal)
 import Test.Unit.Main (runTest)
@@ -50,6 +49,24 @@ main = runTest do
     test "slice length" do
       equal 3 $ length $ slice d3 d6 vec3
       equal 3 $ toInt $ (lengthT (slice' d3 vec3) :: D3)
+
+    let f = (+) 1 +> (+) 3 +> empty
+        g = (*) 3 +> (*) 2 +> empty
+        h = 5 +> 6 +> empty
+        x = 1 +> 3 +> empty
+
+        f' a = a + 1
+        x' = 2
+    test "apply law: Associative composition" do
+      equal ((<<<) <$> f <*> g <*> h) (f <*> (g <*> h))
+    test "applicative law: Identity" do
+      equal (pure identity <*> x) x
+    test "applicative law: Composition" do
+      equal (pure (<<<) <*> f <*> g <*> h) (f <*> (g <*> h))
+    test "applicative law: Homomorphism" do
+      equal (pure f' <*> pure x') (pure (f' x') :: Vec D2 Int)
+    test "applicative law: Interchange" do
+      equal (f <*> (pure x')) (pure (_ $ x') <*> f)
     test "pure replicates" do
       let vec3' = pure 3 :: Vec D9 Int
       equal vec3 vec3'
