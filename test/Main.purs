@@ -58,8 +58,8 @@ main = runTest do
         f' a = a + 1
         x' = 2
         
-        f'' = \n -> n + 1 +> n + 3 +> empty
-        g'' = \n -> n * 3 +> n * 2 +> empty
+        f'' = \n -> Vec.vec2 (n + 1) (n + 3)
+        g'' = \n -> Vec.vec2 (n * 3) (n * 2)
     test "apply law: Associative composition" do
       equal ((<<<) <$> f <*> g <*> h) (f <*> (g <*> h))
     test "applicative law: Identity" do
