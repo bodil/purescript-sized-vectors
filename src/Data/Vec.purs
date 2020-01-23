@@ -111,10 +111,10 @@ replicate = const replicate'
 replicate' :: forall s a. Nat s => a -> Vec s a
 replicate' a = Vec $ Array.replicate (toInt (undefined :: s)) a
 
-range' ∷ ∀s. Nat s => Int → Vec s Int
+range' ∷ forall s. Nat s => Int -> Vec s Int
 range' i = fill (_ + i)
 
-range ∷ ∀s. Nat s => Int → s -> Vec s Int
+range ∷ forall s. Nat s => Int -> s -> Vec s Int
 range i _ = range' i
 
 -- | Convert an array to a vector.
@@ -237,7 +237,7 @@ zip (Vec v1) (Vec v2) = Vec $ Array.zip v1 v2
 -- |
 -- | The new vector will be the size of the smallest input vector, and
 -- | superfluous elements from the other will be discarded.
-zipWith :: forall s1 s2 s3 a b c. Nat s1 => Nat s2 => Min s1 s2 s3 => (a -> b -> c) -> Vec s1 a -> Vec s2 b -> Vec s3 c
+zipWith :: forall s1 s2 s3 a b c. Min s1 s2 s3 => (a -> b -> c) -> Vec s1 a -> Vec s2 b -> Vec s3 c
 zipWith f (Vec v1) (Vec v2) = Vec $ Array.zipWith f v1 v2
 
 -- | Zip two vectors with equal length together using a combining function.
