@@ -57,6 +57,9 @@ main = runTest do
 
         f' a = a + 1
         x' = 2
+        
+        f'' = \n -> n + 1 +> n + 3 +> empty
+        g'' = \n -> n * 3 +> n * 2 +> empty
     test "apply law: Associative composition" do
       equal ((<<<) <$> f <*> g <*> h) (f <*> (g <*> h))
     test "applicative law: Identity" do
@@ -67,6 +70,15 @@ main = runTest do
       equal (pure f' <*> pure x') (pure (f' x') :: Vec D2 Int)
     test "applicative law: Interchange" do
       equal (f <*> (pure x')) (pure (_ $ x') <*> f)
+    
+    test "bind law: Associativity" do
+      equal ((x >>= f'') >>= g'') (x >>= (\k -> f'' k >>= g''))
+    test "monad law: Identity" do
+      equal (pure x' >>= f'') (f'' x')
+      equal (x >>= pure) x
+    test "monad law: Applicative superclass" do
+      equal (f <*> x) (f `ap` x)
+
     test "pure replicates" do
       let vec3' = pure 3 :: Vec D9 Int
       equal vec3 vec3'
