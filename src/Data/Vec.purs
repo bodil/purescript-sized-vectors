@@ -47,6 +47,7 @@ module Data.Vec
   ) where
 
 import Prelude
+import Control.Apply (lift2)
 import Data.Array as Array
 import Data.Distributive (class Distributive, collectDefault)
 import Data.Foldable (foldl, foldr, foldMap, class Foldable, sum)
@@ -293,13 +294,15 @@ instance showVec :: (Nat s, Show a) => Show (Vec s a) where
   show (Vec v) = show v
 
 instance semiringVec :: (Semiring a, Nat s) => Semiring (Vec s a) where
-  add v1 v2 = zipWithE add v1 v2
+  add = lift2 add
   zero = pure zero
-  mul v1 v2 = zipWithE mul v1 v2
+  mul = lift2 mul
   one = pure one
 
 instance ringVec :: (Ring a, Nat s) => Ring (Vec s a) where
-  sub v1 v2 = zipWithE sub v1 v2
+  sub = lift2 sub
+
+instance commutativeRingVec :: (CommutativeRing a, Nat s) => CommutativeRing (Vec s a)
 
 dotProduct :: ∀s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b
