@@ -50,10 +50,10 @@ main = runTest do
       equal 3 $ length $ slice d3 d6 vec3
       equal 3 $ toInt $ (lengthT (slice' d3 vec3) :: D3)
 
-    let f = (+) 1 +> (+) 3 +> empty
-        g = (*) 3 +> (*) 2 +> empty
-        h = 5 +> 6 +> empty
-        x = 1 +> 3 +> empty
+    let f = Vec.vec2 (_ + 1) (_ + 3)
+        g = Vec.vec2 (_ * 3) (_ * 2)
+        h = Vec.vec2 5 6
+        x = Vec.vec2 1 3
 
         f' a = a + 1
         x' = 2
@@ -113,6 +113,10 @@ main = runTest do
       let v1 = Vec.vec3 1 2 3
       equal (v1 - v1) zero
       equal ((zero - v1) + v1) zero
+    test "commutative ring" do
+      let v1 = Vec.vec3 1 2 3
+          v2 = Vec.vec3 4 5 6
+      equal (v1 * v2) (v2 * v1)
     test "dotProduct" do
       equal 0 $ dotProduct (Vec.vec3 1 0 0) (Vec.vec3 0 1 0)
       equal 32 $ dotProduct (Vec.vec3 1 2 3) (Vec.vec3 4 5 6)
