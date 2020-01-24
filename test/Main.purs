@@ -117,6 +117,13 @@ main = runTest do
       let v1 = Vec.vec3 1 2 3
           v2 = Vec.vec3 4 5 6
       equal (v1 * v2) (v2 * v1)
+    test "semigroup and monoid" do
+      let v1 = Vec.vec3 "he" "," "wor"
+          v2 = Vec.vec3 "llo" " " "ld"
+          v3 = Vec.vec3 " a" " b" " c"
+      equal ((v1 <> v2) <> v3) (v1 <> (v2 <> v3))
+      equal (v1 <> mempty) v1
+      equal (mempty <> v1) v1
     test "dotProduct" do
       equal 0 $ dotProduct (Vec.vec3 1 0 0) (Vec.vec3 0 1 0)
       equal 32 $ dotProduct (Vec.vec3 1 2 3) (Vec.vec3 4 5 6)

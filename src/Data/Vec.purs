@@ -304,5 +304,11 @@ instance ringVec :: (Ring a, Nat s) => Ring (Vec s a) where
 
 instance commutativeRingVec :: (CommutativeRing a, Nat s) => CommutativeRing (Vec s a)
 
+instance semigroupVec :: (Semigroup a, Nat s) => Semigroup (Vec s a) where
+  append = lift2 append
+
+instance monoidVec :: (Monoid a, Nat s) => Monoid (Vec s a) where
+  mempty = pure mempty
+
 dotProduct :: ∀s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b
