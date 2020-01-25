@@ -291,7 +291,7 @@ instance eqVec :: (Nat s, Eq a) => Eq (Vec s a) where
   eq (Vec v1) (Vec v2) = v1 == v2
 
 instance showVec :: (Nat s, Show a) => Show (Vec s a) where
-  show (Vec v) = "(Vec " <> show v <> ")"
+  show v = "(" <> foldMap (\e -> show e <> " +> ") v <> "empty)"
 
 instance semiringVec :: (Semiring a, Nat s) => Semiring (Vec s a) where
   add = lift2 add
