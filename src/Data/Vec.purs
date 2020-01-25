@@ -102,7 +102,7 @@ fill f = Vec $ map f range_
     s = toInt (undefined :: s)
     range_ = case s of
       0 -> []
-      otherwise -> (0 `Array.range`  (s - 1))
+      otherwise -> (0 `Array.range` (s - 1))
 
 -- | Construct a vector of a given length containing the same element repeated.
 replicate :: forall s a. Nat s => s -> a -> Vec s a
@@ -111,10 +111,10 @@ replicate = const replicate'
 replicate' :: forall s a. Nat s => a -> Vec s a
 replicate' a = Vec $ Array.replicate (toInt (undefined :: s)) a
 
-range' ∷ forall s. Nat s => Int -> Vec s Int
+range' :: forall s. Nat s => Int -> Vec s Int
 range' i = fill (_ + i)
 
-range ∷ forall s. Nat s => Int -> s -> Vec s Int
+range :: forall s. Nat s => Int -> s -> Vec s Int
 range i _ = range' i
 
 -- | Convert an array to a vector.
@@ -304,5 +304,5 @@ instance ringVec :: (Ring a, Nat s) => Ring (Vec s a) where
 
 instance commutativeRingVec :: (CommutativeRing a, Nat s) => CommutativeRing (Vec s a)
 
-dotProduct :: ∀s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
+dotProduct :: forall s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b
