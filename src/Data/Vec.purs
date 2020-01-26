@@ -49,7 +49,7 @@ module Data.Vec
 import Prelude
 import Control.Apply (lift2)
 import Data.Array as Array
-import Data.Distributive (class Distributive, collectDefault)
+import Data.Distributive (class Distributive, collectDefault, distribute)
 import Data.Foldable (foldl, foldr, foldMap, class Foldable, sum)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Traversable (traverse, sequence, class Traversable)
@@ -269,6 +269,11 @@ instance applyVec :: Nat s => Apply (Vec s) where
 
 instance applicativeVec :: Nat s => Applicative (Vec s) where
   pure a = replicate' a
+
+instance bindVec :: Nat s => Bind (Vec s) where
+  bind vec f = distribute f <*> vec
+
+instance monadVec :: Nat s => Monad (Vec s)
 
 instance foldableVec :: Nat s => Foldable (Vec s) where
   foldMap f (Vec xs) = foldMap f xs
