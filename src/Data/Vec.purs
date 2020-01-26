@@ -264,7 +264,7 @@ instance functorVec :: Nat s => Functor (Vec s) where
   map f (Vec xs) = Vec $ map f xs
 
 instance applyVec :: Nat s => Apply (Vec s) where
-  apply (Vec a) (Vec b) = Vec $ apply a b
+  apply a b = zipWithE ($) a b
 
 instance applicativeVec :: Nat s => Applicative (Vec s) where
   pure a = replicate' a
