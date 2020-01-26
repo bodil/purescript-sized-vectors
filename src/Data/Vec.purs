@@ -47,6 +47,7 @@ module Data.Vec
   ) where
 
 import Prelude
+import Control.Apply (lift2)
 import Data.Array as Array
 import Data.Distributive (class Distributive, collectDefault)
 import Data.Foldable (foldl, foldr, foldMap, class Foldable, sum)
@@ -110,10 +111,10 @@ replicate = const replicate'
 replicate' :: forall s a. Nat s => a -> Vec s a
 replicate' a = Vec $ Array.replicate (toInt (undefined :: s)) a
 
-range' ∷ ∀s. Nat s => Int → Vec s Int
+range' ∷ forall s. Nat s => Int -> Vec s Int
 range' i = fill (_ + i)
 
-range ∷ ∀s. Nat s => Int → s -> Vec s Int
+range ∷ forall s. Nat s => Int -> s -> Vec s Int
 range i _ = range' i
 
 -- | Convert an array to a vector.
@@ -236,7 +237,7 @@ zip (Vec v1) (Vec v2) = Vec $ Array.zip v1 v2
 -- |
 -- | The new vector will be the size of the smallest input vector, and
 -- | superfluous elements from the other will be discarded.
-zipWith :: forall s1 s2 s3 a b c. Nat s1 => Nat s2 => Min s1 s2 s3 => (a -> b -> c) -> Vec s1 a -> Vec s2 b -> Vec s3 c
+zipWith :: forall s1 s2 s3 a b c. Min s1 s2 s3 => (a -> b -> c) -> Vec s1 a -> Vec s2 b -> Vec s3 c
 zipWith f (Vec v1) (Vec v2) = Vec $ Array.zipWith f v1 v2
 
 -- | Zip two vectors with equal length together using a combining function.
@@ -290,16 +291,24 @@ instance eqVec :: (Nat s, Eq a) => Eq (Vec s a) where
   eq (Vec v1) (Vec v2) = v1 == v2
 
 instance showVec :: (Nat s, Show a) => Show (Vec s a) where
-  show (Vec v) = show v
+  show (Vec v) = "(Vec " <> show v <> ")"
 
 instance semiringVec :: (Semiring a, Nat s) => Semiring (Vec s a) where
-  add v1 v2 = zipWithE add v1 v2
+  add = lift2 add
   zero = pure zero
-  mul v1 v2 = zipWithE mul v1 v2
+  mul = lift2 mul
   one = pure one
 
 instance ringVec :: (Ring a, Nat s) => Ring (Vec s a) where
-  sub v1 v2 = zipWithE sub v1 v2
+  sub = lift2 sub
+
+instance commutativeRingVec :: (CommutativeRing a, Nat s) => CommutativeRing (Vec s a)
+
+instance semigroupVec :: (Semigroup a, Nat s) => Semigroup (Vec s a) where
+  append = lift2 append
+
+instance monoidVec :: (Monoid a, Nat s) => Monoid (Vec s a) where
+  mempty = pure mempty
 
 dotProduct :: ∀s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b
