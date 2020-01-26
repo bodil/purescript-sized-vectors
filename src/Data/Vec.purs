@@ -61,9 +61,18 @@ import Data.Typelevel.Num.Sets (class Nat, class Pos, toInt)
 import Data.Typelevel.Undefined (undefined)
 import Data.Unfoldable (class Unfoldable)
 import Partial.Unsafe (unsafePartial)
+import Test.QuickCheck (class Arbitrary, arbitrary, class Coarbitrary, coarbitrary)
 
 -- | `Vec s a` is an array with a fixed size `s` defined at the type level.
 newtype Vec s a = Vec (Array a)
+
+instance arbitraryVec :: (Arbitrary a, Nat s) => Arbitrary (Vec s a) where
+  arbitrary = Vec <$> (sequence (Array.replicate s arbitrary))
+    where
+      s = toInt (undefined :: s)
+
+instance coarbitraryVec :: (Coarbitrary a, Nat s) => Coarbitrary (Vec s a) where
+  coarbitrary = foldl (\f x -> f <<< coarbitrary x) identity
 
 -- | An empty vector.
 empty :: forall a. Vec D0 a
