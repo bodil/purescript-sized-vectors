@@ -47,10 +47,12 @@ module Data.Vec
   ) where
 
 import Prelude
+
 import Control.Apply (lift2)
 import Data.Array as Array
 import Data.Distributive (class Distributive, collectDefault, distribute)
 import Data.Foldable (foldl, foldr, foldMap, class Foldable, sum)
+import Data.FoldableWithIndex (class FoldableWithIndex, foldMapWithIndex, foldlWithIndex, foldrWithIndex)
 import Data.FunctorWithIndex (class FunctorWithIndex)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Traversable (traverse, sequence, class Traversable)
@@ -285,7 +287,7 @@ instance bindVec :: Nat s => Bind (Vec s) where
 
 instance monadVec :: Nat s => Monad (Vec s)
 
-instance foldableVec :: Nat s => Foldable (Vec s) where
+instance foldableVec :: Foldable (Vec s) where
   foldMap f (Vec xs) = foldMap f xs
   foldr f i (Vec xs) = foldr f i xs
   foldl f i (Vec xs) = foldl f i xs
@@ -326,7 +328,12 @@ instance monoidVec :: (Monoid a, Nat s) => Monoid (Vec s a) where
   mempty = pure mempty
 
 instance functorWithIndex :: FunctorWithIndex Int (Vec s) where
-  mapWithIndex f (Vec xs) = Vec $ Array.mapWithIndex f xs 
+  mapWithIndex f (Vec xs) = Vec $ Array.mapWithIndex f xs
+
+instance foldableWithIndex :: FoldableWithIndex Int (Vec s) where
+  foldrWithIndex f z (Vec xs) = foldrWithIndex f z xs
+  foldlWithIndex f z (Vec xs) = foldlWithIndex f z xs
+  foldMapWithIndex f (Vec xs) = foldMapWithIndex f xs
 
 dotProduct :: forall s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b

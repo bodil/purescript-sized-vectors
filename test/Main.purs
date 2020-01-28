@@ -1,7 +1,10 @@
 module Test.Main where
 
 import Prelude
+
 import Data.Distributive (distribute)
+import Data.Foldable (foldMap, foldl, foldr)
+import Data.FoldableWithIndex (foldMapWithIndex, foldlWithIndex, foldrWithIndex)
 import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (fromJust)
 import Data.Traversable (sequence)
@@ -118,3 +121,13 @@ main = runTest do
           (mapWithIndex f <<< mapWithIndex g) vec == mapWithIndex (\i -> f i <<< g i) vec
     test "functor law: identity, composition" do
       liftEffect $ checkFunctor (Proxy2 :: Proxy2 (Vec D9))
+    suite "foldableWithIndex" do
+      test "foldr compatible" do
+        quickCheck \(f :: A -> B -> B) (b :: B) (fa :: Vec D9 A) ->
+          foldr f b fa == foldrWithIndex (const f) b fa
+      test "foldl compatible" do
+        quickCheck \(f :: B -> A -> B) (b :: B) (fa :: Vec D9 A) ->
+          foldl f b fa == foldlWithIndex (const f) b fa
+      test "foldMapWithIndex compatible" do
+        quickCheck \(f :: A -> B) (fa :: Vec D9 A) ->
+          foldMap f fa == foldMapWithIndex (const f) fa
