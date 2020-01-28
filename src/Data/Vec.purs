@@ -51,6 +51,7 @@ import Control.Apply (lift2)
 import Data.Array as Array
 import Data.Distributive (class Distributive, collectDefault, distribute)
 import Data.Foldable (foldl, foldr, foldMap, class Foldable, sum)
+import Data.FunctorWithIndex (class FunctorWithIndex)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Traversable (traverse, sequence, class Traversable)
 import Data.Tuple (Tuple(Tuple))
@@ -270,7 +271,7 @@ sortBy f (Vec v) = Vec $ Array.sortBy f v
 reverse :: forall s a. Nat s => Vec s a -> Vec s a
 reverse (Vec v) = Vec $ Array.reverse v
 
-instance functorVec :: Nat s => Functor (Vec s) where
+instance functorVec :: Functor (Vec s) where
   map f (Vec xs) = Vec $ map f xs
 
 instance applyVec :: Nat s => Apply (Vec s) where
@@ -323,6 +324,9 @@ instance semigroupVec :: (Semigroup a, Nat s) => Semigroup (Vec s a) where
 
 instance monoidVec :: (Monoid a, Nat s) => Monoid (Vec s a) where
   mempty = pure mempty
+
+instance functorWithIndex :: FunctorWithIndex Int (Vec s) where
+  mapWithIndex f (Vec xs) = Vec $ Array.mapWithIndex f xs 
 
 dotProduct :: forall s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b

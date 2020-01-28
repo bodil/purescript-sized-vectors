@@ -2,22 +2,23 @@ module Test.Main where
 
 import Prelude
 import Data.Distributive (distribute)
-import Effect (Effect)
-import Effect.Class (liftEffect)
+import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (fromJust)
 import Data.Traversable (sequence)
 import Data.Typelevel.Num (D1, D2, D3, D4, D9, d2, d3, d6, toInt)
 import Data.Vec (Vec, concat, dotProduct, drop, drop', empty, fill, fromArray, length, lengthT, range, range', replicate, replicate', slice, slice', tail, take, take', (+>))
 import Data.Vec as Vec
+import Effect (Effect)
+import Effect.Class (liftEffect)
 import Partial.Unsafe (unsafePartial)
+import Test.QuickCheck.Laws (A, B)
+import Test.QuickCheck.Laws.Control (checkApply, checkApplicative, checkBind, checkMonad)
+import Test.QuickCheck.Laws.Data (checkCommutativeRing, checkFoldable, checkFoldableFunctor, checkFunctor, checkMonoid, checkRing, checkSemigroup, checkSemiring)
 import Test.Unit (suite, test)
 import Test.Unit.Assert (equal)
 import Test.Unit.Main (runTest)
-import Test.QuickCheck.Laws.Control (checkApply, checkApplicative, checkBind, checkMonad)
-import Test.QuickCheck.Laws.Data
-  ( checkSemiring, checkRing, checkCommutativeRing, checkFoldable, checkFoldableFunctor
-  , checkSemigroup, checkMonoid)
-import Type.Proxy (Proxy (..), Proxy2 (..))
+import Test.Unit.QuickCheck (quickCheck)
+import Type.Proxy (Proxy(..), Proxy2(..))
 
 
 main :: Effect Unit
@@ -56,17 +57,6 @@ main = runTest do
     test "slice length" do
       equal 3 $ length $ slice d3 d6 vec3
       equal 3 $ toInt $ (lengthT (slice' d3 vec3) :: D3)
-
-    let f = Vec.vec2 (_ + 1) (_ + 3)
-        g = Vec.vec2 (_ * 3) (_ * 2)
-        h = Vec.vec2 5 6
-        x = Vec.vec2 1 3
-
-        f' a = a + 1
-        x' = 2
-
-        f'' = \n -> Vec.vec2 (n + 1) (n + 3)
-        g'' = \n -> Vec.vec2 (n * 3) (n * 2)
     test "apply law: Associative composition" do
       liftEffect $ checkApply (Proxy2 :: Proxy2 (Vec D9))
     test "applicative law: Identity, Composition, Homomorphism, Interchange" do
@@ -75,7 +65,6 @@ main = runTest do
       liftEffect $ checkBind (Proxy2 :: Proxy2 (Vec D9))
     test "monad law: Left Identity, Right Identity" do
       liftEffect $ checkMonad (Proxy2 :: Proxy2 (Vec D9))
-
     test "pure replicates" do
       let vec3' = pure 3 :: Vec D9 Int
       equal vec3 vec3'
@@ -103,7 +92,6 @@ main = runTest do
           vecs2 =  (1 +> 3 +> 5 +> empty)
                 +> (2 +> 4 +> 6 +> empty)
                 +> empty
-
       equal vecs2 $ distribute vecs1
       equal vecs1 $ distribute vecs2
       equal vecs1 $ distribute $ distribute vecs1
@@ -121,3 +109,12 @@ main = runTest do
     test "dotProduct" do
       equal 0 $ dotProduct (Vec.vec3 1 0 0) (Vec.vec3 0 1 0)
       equal 32 $ dotProduct (Vec.vec3 1 2 3) (Vec.vec3 4 5 6)
+    suite "functorWithIndex" do
+      test "identity law" do
+        quickCheck \(vec :: Vec D9 A) ->
+          mapWithIndex (\_ a -> a) vec == identity vec
+      test "composition law" do
+        quickCheck \(f :: Int -> B -> A) (g :: Int -> A -> B) (vec :: Vec D9 A) -> 
+          (mapWithIndex f <<< mapWithIndex g) vec == mapWithIndex (\i -> f i <<< g i) vec
+    test "functor law: identity, composition" do
+      liftEffect $ checkFunctor (Proxy2 :: Proxy2 (Vec D9))
