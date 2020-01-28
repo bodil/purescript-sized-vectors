@@ -56,6 +56,7 @@ import Data.FoldableWithIndex (class FoldableWithIndex, foldMapWithIndex, foldlW
 import Data.FunctorWithIndex (class FunctorWithIndex)
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Traversable (traverse, sequence, class Traversable)
+import Data.TraversableWithIndex (class TraversableWithIndex, traverseWithIndex)
 import Data.Tuple (Tuple(Tuple))
 import Data.Typelevel.Num (class Min, class Sub, class LtEq, class Pred, class Lt)
 import Data.Typelevel.Num.Ops (class Add, class Succ)
@@ -292,7 +293,7 @@ instance foldableVec :: Foldable (Vec s) where
   foldr f i (Vec xs) = foldr f i xs
   foldl f i (Vec xs) = foldl f i xs
 
-instance traversableVec :: Nat s => Traversable (Vec s) where
+instance traversableVec :: Traversable (Vec s) where
   traverse f (Vec xs) = Vec <$> traverse f xs
   sequence (Vec xs) = Vec <$> sequence xs
 
@@ -334,6 +335,9 @@ instance foldableWithIndex :: FoldableWithIndex Int (Vec s) where
   foldrWithIndex f z (Vec xs) = foldrWithIndex f z xs
   foldlWithIndex f z (Vec xs) = foldlWithIndex f z xs
   foldMapWithIndex f (Vec xs) = foldMapWithIndex f xs
+
+instance traversableWithIndex :: TraversableWithIndex Int (Vec s) where
+  traverseWithIndex f (Vec xs) = Vec <$> traverseWithIndex f xs
 
 dotProduct :: forall s a. Nat s => Semiring a => Vec s a -> Vec s a -> a
 dotProduct a b = sum $ zipWithE (*) a b

@@ -2,18 +2,23 @@ module Test.Main where
 
 import Prelude
 
+import Data.Const (Const(..))
 import Data.Distributive (distribute)
 import Data.Foldable (foldMap, foldl, foldr)
 import Data.FoldableWithIndex (foldMapWithIndex, foldlWithIndex, foldrWithIndex)
 import Data.FunctorWithIndex (mapWithIndex)
+import Data.Identity (Identity(..))
 import Data.Maybe (fromJust)
-import Data.Traversable (sequence)
+import Data.Newtype (unwrap)
+import Data.Traversable (sequence, traverse)
+import Data.TraversableWithIndex (traverseWithIndex)
 import Data.Typelevel.Num (D1, D2, D3, D4, D9, d2, d3, d6, toInt)
 import Data.Vec (Vec, concat, dotProduct, drop, drop', empty, fill, fromArray, length, lengthT, range, range', replicate, replicate', slice, slice', tail, take, take', (+>))
 import Data.Vec as Vec
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Partial.Unsafe (unsafePartial)
+import Test.QuickCheck (class Arbitrary, arbitrary)
 import Test.QuickCheck.Laws (A, B)
 import Test.QuickCheck.Laws.Control (checkApply, checkApplicative, checkBind, checkMonad)
 import Test.QuickCheck.Laws.Data (checkCommutativeRing, checkFoldable, checkFoldableFunctor, checkFunctor, checkMonoid, checkRing, checkSemigroup, checkSemiring)
@@ -131,3 +136,13 @@ main = runTest do
       test "foldMapWithIndex compatible" do
         quickCheck \(f :: A -> B) (fa :: Vec D9 A) ->
           foldMap f fa == foldMapWithIndex (const f) fa
+    suite "traversableWithIndex" do
+      test "compatible with traversable" do
+        quickCheck \(f :: A -> Identity B) (fa :: Vec D9 A) ->
+          traverse f fa == traverseWithIndex (const f) fa
+      test "compatible with foldableWithIndex" do
+        quickCheck \(f :: Int -> A -> Identity B) (fa :: Vec D9 A) ->
+          foldMapWithIndex f fa == (unwrap <<< traverseWithIndex (\i -> Const <<< f i)) fa
+      test "compatible with functorWithIndex" do
+        quickCheck \(f :: Int -> A -> Vec D9 B) (fa :: Vec D9 A) ->
+          mapWithIndex f fa == (unwrap <<< traverseWithIndex (\i -> Identity <<< f i)) fa 
