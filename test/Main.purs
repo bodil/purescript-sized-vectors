@@ -57,16 +57,6 @@ main = runTest do
       equal 3 $ length $ slice d3 d6 vec3
       equal 3 $ toInt $ (lengthT (slice' d3 vec3) :: D3)
 
-    let f = Vec.vec2 (_ + 1) (_ + 3)
-        g = Vec.vec2 (_ * 3) (_ * 2)
-        h = Vec.vec2 5 6
-        x = Vec.vec2 1 3
-
-        f' a = a + 1
-        x' = 2
-
-        f'' = \n -> Vec.vec2 (n + 1) (n + 3)
-        g'' = \n -> Vec.vec2 (n * 3) (n * 2)
     test "apply law: Associative composition" do
       liftEffect $ checkApply (Proxy2 :: Proxy2 (Vec D9))
     test "applicative law: Identity, Composition, Homomorphism, Interchange" do
