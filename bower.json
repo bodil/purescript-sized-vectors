@@ -20,7 +20,8 @@
     "purescript-unfoldable": "^4.0.0",
     "purescript-typelevel": "^6.0.0",
     "purescript-distributive": "^4.0.0",
-    "purescript-quickcheck": "^6.1.0"
+    "purescript-quickcheck": "^6.1.0",
+    "purescript-argonaut": "^6.0.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^4.0.0",

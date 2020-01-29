@@ -60,11 +60,17 @@ import Data.Typelevel.Num.Reps (D0, D1, D2, D3)
 import Data.Typelevel.Num.Sets (class Nat, class Pos, toInt)
 import Data.Typelevel.Undefined (undefined)
 import Data.Unfoldable (class Unfoldable)
+import Data.Argonaut (class EncodeJson, class DecodeJson)
+import Data.Generic.Rep (class Generic)
 import Partial.Unsafe (unsafePartial)
 import Test.QuickCheck (class Arbitrary, arbitrary, class Coarbitrary, coarbitrary)
 
 -- | `Vec s a` is an array with a fixed size `s` defined at the type level.
 newtype Vec s a = Vec (Array a)
+
+derive instance genericVec :: Generic a a' => Generic (Vec s a) _
+derive newtype instance encodeJsonVec :: EncodeJson a => EncodeJson (Vec s a)
+derive newtype instance decodeJsonVec :: DecodeJson a => DecodeJson (Vec s a)
 
 instance arbitraryVec :: (Arbitrary a, Nat s) => Arbitrary (Vec s a) where
   arbitrary = Vec <$> (sequence (Array.replicate s arbitrary))
