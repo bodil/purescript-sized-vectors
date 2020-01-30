@@ -8,7 +8,6 @@ module Data.Vec
   , vec2
   , vec3
   , fill
-  , range'
   , range
   , replicate
   , replicate'
@@ -51,7 +50,7 @@ import Prelude
   , class Semigroup, class Monoid, (*), pure, append, sub, add, mempty
   , zero, class Show, map, class Functor, class Apply, class Applicative
   , class Bind, class Monad, mul, (<>), (-), (<*>), one, show, (<$>)
-  , flap, (<<<), Ordering, ($), class Ord, identity, const, (+))
+  , flap, (<<<), Ordering, ($), class Ord, identity, const)
 
 import Control.Apply (lift2)
 import Data.Array as Array
@@ -64,7 +63,7 @@ import Data.Maybe (Maybe(..), fromJust)
 import Data.Traversable (sequence, class Traversable)
 import Data.TraversableWithIndex (class TraversableWithIndex)
 import Data.Tuple (Tuple(Tuple))
-import Data.Typelevel.Num (class Min, class Sub, class LtEq, class Pred, class Lt)
+import Data.Typelevel.Num (class Min, class Max, class Sub, class LtEq, class Pred, class Lt)
 import Data.Typelevel.Num.Ops (class Add, class Succ)
 import Data.Typelevel.Num.Reps (D0, D1, D2, D3)
 import Data.Typelevel.Num.Sets (class Nat, class Pos, toInt, toInt')
@@ -124,11 +123,11 @@ replicate = const replicate'
 replicate' :: forall s a. Nat s => a -> Vec s a
 replicate' a = Vec (Array.replicate (toInt' (Proxy :: Proxy s)) a)
 
-range' :: forall s. Nat s => Int -> Vec s Int
-range' i = fill (_ + i)
-
-range :: forall s. Nat s => Int -> s -> Vec s Int
-range i _ = range' i
+range :: forall n1 n2 n3 max min diff
+       . Nat n1 => Nat n2 => Max n1 n2 max => Min n1 n2 min => Sub max min diff
+      => Succ diff n3
+      => n1 -> n2 -> Vec n3 Int
+range _ _ = Vec (Array.range (toInt' (Proxy :: Proxy n1)) (toInt' (Proxy :: Proxy n2)))
 
 -- | Convert an array to a vector.
 fromArray :: forall s a. Nat s => Array a -> Maybe (Vec s a)

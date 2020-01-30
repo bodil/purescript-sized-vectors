@@ -12,8 +12,8 @@ import Data.Maybe (fromJust)
 import Data.Newtype (unwrap)
 import Data.Traversable (sequence, traverse)
 import Data.TraversableWithIndex (traverseWithIndex)
-import Data.Typelevel.Num (D1, D2, D3, D4, D9, d2, d3, d6, toInt)
-import Data.Vec (Vec, concat, dotProduct, drop, drop', empty, fill, fromArray, length, lengthT, range, range', replicate, replicate', slice, slice', tail, take, take', (+>))
+import Data.Typelevel.Num (D1, D2, D3, D4, D9, d2, d3, d4, d6, toInt)
+import Data.Vec (Vec, concat, dotProduct, drop, drop', empty, fill, fromArray, length, lengthT, range, replicate, replicate', slice, slice', tail, take, take', (+>))
 import Data.Vec as Vec
 import Effect (Effect)
 import Effect.Class (liftEffect)
@@ -38,11 +38,9 @@ main = runTest do
         (vec4 :: Vec D4 Int) = unsafePartial $ fromJust $ fromArray [1, 2, 3, 4]
     test "fill" do
       equal (Vec.vec3 1 2 3) $ fill (_ + 1)
-    test "range'" do
-      equal (Vec.vec3 4 5 6) $ range' 4
-      equal (Vec.vec2 4 5) $ range' 4
     test "range" do
-      equal (Vec.vec3 4 5 6) $ range 4 d3
+      equal (Vec.vec3 4 5 6) $ range d4 d6
+      equal (Vec.vec3 6 5 4) $ range d6 d4
     test "cons length" do
       equal 3 $ toInt $ lengthT $ 1 +> 2 +> 3 +> empty
       equal 3 $ length $ 1 +> 2 +> 3 +> empty
