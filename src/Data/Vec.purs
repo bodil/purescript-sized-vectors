@@ -167,7 +167,7 @@ range ::
   Sub max min diff =>
   Succ diff n3 =>
   n1 -> n2 -> Vec n3 Int
-range _ _ = Vec (Array.range (toInt' (Proxy :: Proxy n1)) (toInt' (Proxy :: Proxy n2)))
+range a b = Vec (Array.range (toInt a) (toInt b))
 
 -- | Convert an array to a vector.
 fromArray :: forall s a. Nat s => Array a -> Maybe (Vec s a)
