@@ -18,7 +18,6 @@ import Data.Vec as Vec
 import Effect (Effect)
 import Effect.Class (liftEffect)
 import Partial.Unsafe (unsafePartial)
-import Test.QuickCheck (class Arbitrary, arbitrary)
 import Test.QuickCheck.Laws (A, B)
 import Test.QuickCheck.Laws.Control (checkApply, checkApplicative, checkBind, checkMonad)
 import Test.QuickCheck.Laws.Data (checkCommutativeRing, checkFoldable, checkFoldableFunctor, checkFunctor, checkMonoid, checkRing, checkSemigroup, checkSemiring)
