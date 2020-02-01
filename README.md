@@ -4,7 +4,19 @@
 
 Idris style sized vectors using [purescript-typelevel](https://github.com/bodil/purescript-typelevel).
 
-* [API docs on Pursuit](http://pursuit.purescript.org/packages/purescript-sized-vectors/)
+- [API docs on Pursuit](http://pursuit.purescript.org/packages/purescript-sized-vectors/)
+
+## Installation
+
+```bash
+bower install --save purescript-sized-vectors
+```
+
+or
+
+```
+spago install sized-vectors
+```
 
 ## Usage
 
