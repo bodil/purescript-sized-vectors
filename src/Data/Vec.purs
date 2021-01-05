@@ -320,6 +320,8 @@ derive instance genericVec :: Generic a a' => Generic (Vec s a) _
 
 derive newtype instance eqVec :: Eq a => Eq (Vec s a)
 
+derive newtype instance ordVec :: Ord a => Ord (Vec s a)
+
 derive newtype instance functorVec :: Functor (Vec s)
 
 derive newtype instance foldableVec :: Foldable (Vec s)
